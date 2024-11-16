@@ -13,6 +13,7 @@ class Designation(models.Model):
     
 class Specialization(models.Model):
     name=models.CharField(max_length=40)
+    description=models.TextField(null=True , blank= True)
     slug=models.SlugField(max_length=50)
     def __str__(self):
         return self.name
@@ -26,12 +27,14 @@ class AvailableTime(models.Model):
 class Doctor(models.Model):
     user=models.OneToOneField(User,on_delete=models.CASCADE)
     images=models.ImageField(upload_to='doctor/images/')
+    contact_number=models.CharField(max_length=15,null=True)
     designation=models.ManyToManyField(Designation)
     specialization=models.ManyToManyField(Specialization)
     available_time=models.ManyToManyField(AvailableTime)
     fee=models.IntegerField()
+    experience_years=models.PositiveIntegerField(null=True)
     meet_link=models.CharField(max_length=100)
-     
+
     def __str__(self):
         return f"{self.user.first_name} {self.user.last_name}"
     
@@ -51,3 +54,13 @@ class Review(models.Model):
     
     def __str__(self):
         return f"Patient- {self.reviewer.user.first_name} : Doctor- {self.doctor.user.first_name}"
+    
+    
+class MedicalRecord(models.Model):
+    patient=models.ForeignKey(Patient, on_delete=models.CASCADE)
+    diagnosis=models.CharField(max_length=255)
+    treatment=models.TextField()
+    date=models.DateField()
+    
+    def __str__(self):
+        return f"Patient name : {self.patient.user.first_name}"
